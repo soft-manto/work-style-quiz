@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>你是哪種工作風格？</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #FAF7F2;
+      --ink: #1A1A1A;
+      --accent: #D4521A;
+      --muted: #8A8480;
+      --border: #E0DBD4;
+      --card: #FFFFFF;
+      --tag-bg: #F0EDE8;
+    }
+
+    body {
+      font-family: 'DM Mono', monospace;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: 'WORK';
+      position: absolute;
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(8rem, 22vw, 20rem);
+      font-weight: 900;
+      color: rgba(212,82,26,0.06);
+      letter-spacing: -0.05em;
+      pointer-events: none;
+      user-select: none;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+    }
+
+    .hero-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--accent);
+      padding: 0.3rem 0.8rem;
+      display: inline-block;
+    }
+
+    .hero-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(2.2rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.2rem;
+      position: relative;
+    }
+
+    .hero-title span {
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      max-width: 420px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-start {
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      padding: 1rem 2.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      text-transform: uppercase;
+    }
+    .btn-start:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .hero-meta {
+      margin-top: 2rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── QUIZ ── */
+    #quiz {
+      display: none;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 6rem;
+    }
+
+    .progress-bar-wrap {
+      margin-bottom: 3rem;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+      text-transform: uppercase;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 2px;
+      background: var(--border);
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+
+    .question-block {
+      animation: fadeUp 0.4s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .q-number {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .q-text {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(1.15rem, 3vw, 1.45rem);
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .opt-btn {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      padding: 1rem 1.25rem;
+      text-align: left;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: var(--ink);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .opt-btn:hover {
+      border-color: var(--accent);
+      background: #FFF8F5;
+      transform: translateX(4px);
+    }
+
+    .opt-btn.selected {
+      border-color: var(--accent);
+      background: #FFF3EE;
+    }
+
+    .opt-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      min-width: 1.2rem;
+      padding-top: 0.1rem;
+    }
+
+    /* ── RESULT ── */
+    #result {
+      display: none;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem 6rem;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .result-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .result-type {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-emoji {
+      font-size: 2.5rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+
+    .result-divider {
+      width: 3rem;
+      height: 2px;
+      background: var(--accent);
+      margin: 1.5rem 0;
+    }
+
+    .result-desc {
+      font-size: 0.9rem;
+      line-height: 1.9;
+      color: #3A3A3A;
+      margin-bottom: 2rem;
+      max-width: 520px;
+    }
+
+    .result-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .tag {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 3rem;
+    }
+
+    .score-item {
+      border: 1.5px solid var(--border);
+      padding: 0.75rem 1rem;
+    }
+
+    .score-item.top {
+      border-color: var(--accent);
+      background: #FFF8F5;
+    }
+
+    .score-name {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .score-bar-wrap {
+      height: 3px;
+      background: var(--border);
+      margin-bottom: 0.4rem;
+    }
+
+    .score-bar {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.8s ease 0.3s;
+    }
+
+    .score-val {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .btn-retry {
+      background: transparent;
+      border: 1.5px solid var(--ink);
+      padding: 0.85rem 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      color: var(--ink);
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-retry:hover {
+      background: var(--ink);
+      color: var(--cream);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 600px) {
+      #hero::before { display: none; }
+      .score-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-label">Self Assessment</div>
+  <h1 class="hero-title">你是哪種<br><span>工作風格？</span></h1>
+  <p class="hero-sub">8 個情境題，找出你在職場中最自然的行為模式與優勢傾向。</p>
+  <button class="btn-start" onclick="startQuiz()">開始測驗</button>
+  <p class="hero-meta">約 3 分鐘 ・ 共 8 題 ・ 五種類型</p>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div class="progress-bar-wrap">
+    <div class="progress-info">
+      <span>進度</span>
+      <span id="prog-text">1 / 8</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-block" id="question-block"></div>
+</section>
+
+<!-- RESULT -->
+<section id="result" id="result"></section>
+
+<script>
+  // 類型定義
+  const TYPES = {
+    S: { name: '策略家', emoji: '🧠', tags: ['規劃導向','系統思考','長遠視野','結構化'], desc: '你是天生的規劃者。面對任何任務，你習慣先建立全局視野，再逐步拆解執行。你的優勢在於能看見別人看不到的風險與機會，並在混亂中維持方向感。在團隊中，你常是那個讓大家「知道為什麼要這麼做」的人。' },
+    E: { name: '執行者', emoji: '⚡', tags: ['行動派','效率優先','結果導向','務實'], desc: '你是讓事情真正發生的人。相較於過度規劃，你更相信「先做再調整」的力量。你的執行力強、節奏快，能在壓力下保持冷靜並推動進展。團隊有你在，事情就會動起來。' },
+    C: { name: '協調者', emoji: '🤝', tags: ['溝通型','團隊黏著劑','同理心強','共識建立'], desc: '你是團隊運作的潤滑劑。你天生對人與人之間的關係敏感，能在不同立場之間找到共識。你的存在讓團隊更有凝聚力，也讓每個人感覺被聽見。衝突在你手上，往往能化解為合作。' },
+    R: { name: '創意人', emoji: '🎨', tags: ['跳躍思考','點子王','不拘框架','發散型'], desc: '你是靈感與可能性的來源。你的大腦不走尋常路，常在別人覺得「就這樣了」的時候，提出讓人眼睛一亮的新角度。雖然有時讓人跟不上，但你帶來的創新往往是突破的關鍵。' },
+    A: { name: '分析師', emoji: '🔍', tags: ['數據導向','謹慎細心','邏輯清晰','品質把關'], desc: '你是團隊的品質守門員。你不輕易接受「大概是這樣」，而是追求有憑有據的結論。你的謹慎讓決策更穩健，你找出的細節問題，往往能在爆炸前就被阻止。' }
+  };
+
+  // 題目
+  const QUESTIONS = [
+    {
+      text: '接到一個新任務，你的第一個動作是？',
+      opts: [
+        { text: '先規劃整體時程與里程碑', type: 'S' },
+        { text: '馬上開始做，邊做邊調整', type: 'E' },
+        { text: '找組員討論如何分工', type: 'C' },
+        { text: '思考有沒有更好的做法', type: 'R' },
+        { text: '先搜集相關資料與案例', type: 'A' },
+      ]
+    },
+    {
+      text: '開會時，你通常是哪種角色？',
+      opts: [
+        { text: '事先準備好議程與目標', type: 'S' },
+        { text: '邊討論邊推進，讓會議有進展', type: 'E' },
+        { text: '確保每個人都有機會發言', type: 'C' },
+        { text: '突然提出讓大家想一想的新角度', type: 'R' },
+        { text: '負責記錄重點、數字、決議', type: 'A' },
+      ]
+    },
+    {
+      text: '截止日快到了，你的反應是？',
+      opts: [
+        { text: '早就有備案，按計畫收尾', type: 'S' },
+        { text: '衝！集中火力加速完成', type: 'E' },
+        { text: '看看有沒有人需要幫忙或資源', type: 'C' },
+        { text: '想想有沒有更快的做法', type: 'R' },
+        { text: '重新檢查有無遺漏或錯誤', type: 'A' },
+      ]
+    },
+    {
+      text: '你最難忍受的工作狀態是？',
+      opts: [
+        { text: '毫無計畫、走一步算一步', type: 'S' },
+        { text: '一直開會、遲遲不行動', type: 'E' },
+        { text: '各自為政、沒有溝通', type: 'C' },
+        { text: '一直重複做同樣的事', type: 'R' },
+        { text: '靠感覺做決定、沒有依據', type: 'A' },
+      ]
+    },
+    {
+      text: '同事來找你討論問題，你通常怎麼回應？',
+      opts: [
+        { text: '給出一個有架構的分析與建議', type: 'S' },
+        { text: '直接說「我覺得應該這樣做」', type: 'E' },
+        { text: '先問他自己的想法是什麼', type: 'C' },
+        { text: '提出一個意想不到的新角度', type: 'R' },
+        { text: '先查看有無相關資料或前例', type: 'A' },
+      ]
+    },
+    {
+      text: '你覺得一個「好的工作成果」是什麼？',
+      opts: [
+        { text: '有達到原訂的計畫目標', type: 'S' },
+        { text: '在時限內快速有效地完成', type: 'E' },
+        { text: '大家都滿意、沒有人不開心', type: 'C' },
+        { text: '有創新、做出之前沒人做過的東西', type: 'R' },
+        { text: '零錯誤、有完整的紀錄與依據', type: 'A' },
+      ]
+    },
+    {
+      text: '你的桌面或電腦資料夾通常是？',
+      opts: [
+        { text: '分類整齊、有清楚的架構', type: 'S' },
+        { text: '東西放哪我知道就好，不一定整齊', type: 'E' },
+        { text: '有共用資料夾讓團隊一起存取', type: 'C' },
+        { text: '亂，但我有自己的邏輯（別人可能看不懂）', type: 'R' },
+        { text: '有命名規則、版本號和備份', type: 'A' },
+      ]
+    },
+    {
+      text: '最能讓你有成就感的瞬間是？',
+      opts: [
+        { text: '計畫被完整執行，結果符合預期', type: 'S' },
+        { text: '在時限內搞定一件困難的事', type: 'E' },
+        { text: '幫助別人解決他解決不了的問題', type: 'C' },
+        { text: '做出一個從來沒人做過的東西', type: 'R' },
+        { text: '找出別人都沒發現的關鍵問題', type: 'A' },
+      ]
+    },
+  ];
+
+  let current = 0;
+  let scores = { S: 0, E: 0, C: 0, R: 0, A: 0 };
+
+  function startQuiz() {
+    document.getElementById('hero').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const q = QUESTIONS[current];
+    const block = document.getElementById('question-block');
+    // 打亂選項（讓每次顯示順序固定但視覺不全是同一種類型在同一個位置）
+    const labels = ['A','B','C','D','E'];
+    const shuffled = [...q.opts].sort(() => 0); // 保持原順序，可改成 Math.random()-0.5 打亂
+
+    block.innerHTML = `
+      <div class="q-number">Question ${current + 1} of ${QUESTIONS.length}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="options">
+        ${shuffled.map((o, i) => `
+          <button class="opt-btn" onclick="selectOpt('${o.type}', this)">
+            <span class="opt-label">${labels[i]}</span>
+            <span>${o.text}</span>
+          </button>
+        `).join('')}
+      </div>
+    `;
+
+    // 重新觸發動畫
+    block.style.animation = 'none';
+    block.offsetHeight;
+    block.style.animation = '';
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const pct = (current / QUESTIONS.length) * 100;
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-text').textContent = `${current + 1} / ${QUESTIONS.length}`;
+  }
+
+  function selectOpt(type, btn) {
+    // 視覺 feedback
+    document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+
+    setTimeout(() => {
+      scores[type]++;
+      current++;
+      if (current < QUESTIONS.length) {
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }, 350);
+  }
+
+  function showResult() {
+    document.getElementById('quiz').style.display = 'none';
+    const resultEl = document.getElementById('result');
+    resultEl.style.display = 'block';
+
+    // 找最高分
+    const topKey = Object.entries(scores).sort((a,b) => b[1]-a[1])[0][0];
+    const t = TYPES[topKey];
+    const total = QUESTIONS.length;
+
+    // 分數列
+    const scoreHTML = Object.entries(scores)
+      .sort((a,b) => b[1]-a[1])
+      .map(([k,v]) => {
+        const pct = Math.round((v/total)*100);
+        return `
+          <div class="score-item ${k===topKey?'top':''}">
+            <div class="score-name">${TYPES[k].emoji} ${TYPES[k].name}</div>
+            <div class="score-bar-wrap">
+              <div class="score-bar" style="width:0%" data-pct="${pct}"></div>
+            </div>
+            <div class="score-val">${v} / ${total}</div>
+          </div>
+        `;
+      }).join('');
+
+    resultEl.innerHTML = `
+      <div class="result-eyebrow">你的工作風格是</div>
+      <div class="result-type">${t.name}</div>
+      <span class="result-emoji">${t.emoji}</span>
+      <div class="result-divider"></div>
+      <p class="result-desc">${t.desc}</p>
+      <div class="result-tags">${t.tags.map(tag=>`<span class="tag">${tag}</span>`).join('')}</div>
+      <div class="score-grid">${scoreHTML}</div>
+      <button class="btn-retry" onclick="retry()">重新測驗</button>
+    `;
+
+    // 動畫跑 bar
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.score-bar').forEach(bar => {
+        bar.style.width = bar.dataset.pct + '%';
+      });
+    });
+  }
+
+  function retry() {
+    current = 0;
+    scores = { S:0, E:0, C:0, R:0, A:0 };
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('hero').style.display = 'flex';
+  }
+</script>
+</body>
+</html>
