@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>你是哪種工作風格？</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Fraunces:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+  <style>
+/* ────────────────────────────────
+   工作風格測驗 · 共用
+──────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; }
+body {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+kbd {
+  display: inline-block; padding: 2px 6px; border: 1px solid currentColor;
+  border-radius: 3px; font-size: 0.68rem; font-family: inherit; line-height: 1;
+  margin: 0 2px; opacity: 0.75;
+}
+
+/* ================================
+   方案 A · 編輯雜誌風
+================================ */
+.ed-wrap {
+  --cream: #FAF7F2;
+  --ink: #111;
+  --accent: #D4521A;
+  --muted: #8A8480;
+  --border: #E6E1D9;
+  --card: #FFFFFF;
+  background: var(--cream); color: var(--ink);
+  min-height: 100vh;
+}
+
+/* HERO */
+.ed-hero {
+  min-height: 100vh;
+  padding: 2rem clamp(1.25rem, 4vw, 3rem);
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
+}
+.ed-hero-grid {
+  width: 100%; max-width: 1200px; margin: 0 auto;
+  flex: 1; display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 2rem;
+}
+.ed-mast, .ed-hero-label, .ed-quiz-head, .ed-result-mast {
+  font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+}
+.ed-mast { display: flex; gap: 0.6rem; align-items: center; color: var(--muted); }
+.ed-mast-num { color: var(--accent); font-weight: 600; }
+.ed-mast-dot { opacity: 0.5; }
+.ed-hero-top {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid var(--border); padding-bottom: 1rem;
+}
+.ed-hero-label {
+  color: var(--accent); border: 1px solid var(--accent);
+  padding: 0.3rem 0.7rem;
+}
+.ed-hero-center {
+  align-self: center;
+  max-width: 760px;
+}
+.ed-hero-kicker {
+  font-size: 0.72rem; letter-spacing: 0.3em; color: var(--accent);
+  margin-bottom: 1.5rem; font-weight: 600;
+}
+.ed-hero-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: clamp(3rem, 10vw, 7.5rem);
+  font-weight: 900; line-height: 0.92;
+  letter-spacing: -0.04em; margin-bottom: 0.5rem;
+}
+.ed-accent { color: var(--accent); font-style: italic; }
+.ed-hero-en {
+  font-family: 'Fraunces', 'Noto Serif TC', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  color: var(--muted); margin-bottom: 2rem;
+  font-style: italic; letter-spacing: -0.01em;
+}
+.ed-hero-en em { font-style: normal; color: var(--accent); }
+.ed-hero-sub {
+  font-size: 0.88rem; line-height: 1.9; color: #3a3a3a;
+  max-width: 440px; margin-bottom: 2.5rem;
+}
+.ed-hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; }
+.ed-btn-primary {
+  background: var(--ink); color: var(--cream);
+  padding: 1rem 2rem; font-size: 0.78rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  transition: all 0.2s ease;
+}
+.ed-btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+.ed-arr { transition: transform 0.2s ease; }
+.ed-btn-primary:hover .ed-arr { transform: translateX(4px); }
+.ed-hero-meta {
+  font-size: 0.72rem; letter-spacing: 0.15em;
+  color: var(--muted); text-transform: uppercase;
+  display: flex; gap: 1rem; align-items: center;
+}
+.ed-hero-bar { width: 1px; height: 12px; background: var(--border); }
+.ed-hero-foot {
+  border-top: 1px solid var(--border); padding-top: 1.25rem;
+}
+.ed-hero-types {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.ed-hero-type {
+  font-size: 0.72rem; letter-spacing: 0.1em;
+  display: flex; gap: 0.6rem; align-items: baseline;
+  color: var(--ink);
+}
+.ed-idx { color: var(--accent); font-weight: 600; }
+
+/* QUIZ */
+.ed-quiz {
+  max-width: 780px; margin: 0 auto;
+  padding: 2.5rem clamp(1.25rem, 4vw, 2.5rem) 4rem;
+  min-height: 100vh; display: flex; flex-direction: column;
+}
+.ed-quiz-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-top: 1px solid var(--ink); padding-top: 1rem;
+}
+.ed-quiz-head-l { display: flex; align-items: baseline; gap: 0.75rem; }
+.ed-sm { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.ed-bignum {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2.5rem; font-weight: 900; color: var(--accent);
+  line-height: 1; letter-spacing: -0.03em;
+}
+.ed-muted { color: var(--muted); }
+.ed-progress {
+  height: 2px; background: var(--border); margin: 0.8rem 0 2.5rem;
+}
+.ed-progress > div {
+  height: 100%; background: var(--accent);
+  transition: width 0.5s cubic-bezier(.2,.8,.2,1);
+}
+
+.ed-q { flex: 1; }
+.ed-in-r { animation: edInR 0.4s cubic-bezier(.2,.8,.2,1) both; }
+.ed-in-l { animation: edInL 0.4s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes edInR {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes edInL {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.ed-q-zh {
+  font-family: 'Noto Serif TC', serif;
+  font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+  font-weight: 700; line-height: 1.45;
+  letter-spacing: -0.01em; margin-bottom: 0.4rem;
+}
+.ed-q-en {
+  font-family: 'Fraunces', serif; font-style: italic;
+  color: var(--muted); font-size: 0.95rem;
+  margin-bottom: 2rem; line-height: 1.5;
+}
+.ed-opts { display: flex; flex-direction: column; gap: 0.6rem; }
+.ed-opt {
+  background: var(--card); border: 1.5px solid var(--border);
+  padding: 1rem 1.1rem; text-align: left;
+  display: flex; align-items: flex-start; gap: 1rem;
+  font-size: 0.85rem; line-height: 1.6;
+  transition: all 0.15s ease; position: relative;
+}
+.ed-opt:hover {
+  border-color: var(--accent); background: #FFF8F3;
+  transform: translateX(6px);
+}
+.ed-opt.is-picked {
+  border-color: var(--accent); background: #FFEFE5;
+  transform: translateX(6px);
+}
+.ed-opt-k {
+  font-size: 0.7rem; letter-spacing: 0.1em; color: var(--accent);
+  font-weight: 600; min-width: 1.2rem; padding-top: 2px;
+}
+.ed-opt-body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.ed-opt-zh { color: var(--ink); }
+.ed-opt-en {
+  font-family: 'Fraunces', serif; font-style: italic;
+  color: var(--muted); font-size: 0.78rem;
+}
+.ed-opt-key {
+  font-size: 0.65rem; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 3px;
+  padding: 2px 5px; align-self: center;
+}
+.ed-opt.is-picked .ed-opt-key,
+.ed-opt:hover .ed-opt-key { color: var(--accent); border-color: var(--accent); }
+
+.ed-quiz-foot {
+  margin-top: 2.5rem; display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--border); padding-top: 1.25rem;
+  font-size: 0.75rem;
+}
+.ed-btn-ghost {
+  font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); transition: color 0.15s;
+}
+.ed-btn-ghost:hover:not(:disabled) { color: var(--accent); }
+.ed-btn-ghost:disabled { opacity: 0.3; cursor: not-allowed; }
+.ed-hint { color: var(--muted); font-size: 0.7rem; }
+
+/* RESULT */
+.ed-result {
+  max-width: 980px; margin: 0 auto;
+  padding: 2.5rem clamp(1.25rem, 4vw, 2.5rem) 4rem;
+  animation: edInR 0.5s cubic-bezier(.2,.8,.2,1) both;
+}
+.ed-result-mast {
+  display: flex; gap: 0.6rem; align-items: center; color: var(--muted);
+  border-top: 1px solid var(--ink); padding-top: 1rem;
+  margin-bottom: 3rem;
+}
+.ed-result-head { text-align: center; margin-bottom: 3.5rem; }
+.ed-result-kicker {
+  font-size: 0.72rem; letter-spacing: 0.3em; color: var(--accent);
+  text-transform: uppercase; margin-bottom: 1rem;
+}
+.ed-result-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: clamp(4rem, 14vw, 9rem);
+  font-weight: 900; line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+.ed-result-en {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: clamp(1.2rem, 3vw, 1.8rem); color: var(--muted);
+  margin-top: 0.5rem;
+}
+.ed-result-tagline {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.1rem; color: var(--ink); margin-top: 1.5rem;
+}
+
+.ed-result-body {
+  display: grid; grid-template-columns: 1fr 280px;
+  gap: 3rem; margin-bottom: 3.5rem;
+  border-top: 1px solid var(--border); padding-top: 2.5rem;
+}
+.ed-col-label {
+  font-size: 0.7rem; letter-spacing: 0.2em;
+  color: var(--accent); text-transform: uppercase;
+  margin-bottom: 0.9rem; font-weight: 600;
+}
+.ed-result-desc {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.05rem; line-height: 1.85;
+  margin-bottom: 0.8rem;
+}
+.ed-result-desc-en {
+  font-family: 'Fraunces', serif; font-style: italic;
+  color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem;
+}
+.ed-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.ed-tag {
+  border: 1px solid var(--border); background: #F0EDE8;
+  padding: 0.3rem 0.7rem; font-size: 0.72rem;
+  letter-spacing: 0.08em; color: #555;
+}
+
+.ed-radar {
+  display: flex; justify-content: center; align-items: flex-start;
+  border: 1px solid var(--border); background: #FCFAF6;
+  padding: 1rem;
+}
+
+.ed-result-rows {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem 3rem;
+  border-top: 1px solid var(--border); padding-top: 2.5rem; margin-bottom: 3.5rem;
+}
+.ed-ul { list-style: none; }
+.ed-ul li {
+  font-family: 'Noto Serif TC', serif;
+  padding: 0.6rem 0; border-bottom: 1px dashed var(--border);
+  font-size: 0.95rem; line-height: 1.6;
+  position: relative; padding-left: 1.2rem;
+}
+.ed-ul li::before {
+  content: '→'; position: absolute; left: 0; color: var(--accent);
+  font-family: 'DM Mono', monospace;
+}
+
+.ed-scores { border-top: 1px solid var(--border); padding-top: 2.5rem; margin-bottom: 3rem; }
+.ed-score-list { display: flex; flex-direction: column; gap: 1rem; }
+.ed-score {}
+.ed-score.is-top .ed-score-name { color: var(--accent); font-weight: 700; }
+.ed-score-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 0.5rem; font-size: 0.78rem;
+}
+.ed-score-name { letter-spacing: 0.05em; }
+.ed-score-v { color: var(--muted); letter-spacing: 0.05em; }
+.ed-score-bar { height: 3px; background: var(--border); }
+.ed-score-bar > div {
+  height: 100%; background: var(--accent);
+  transition: width 1.2s cubic-bezier(.2,.8,.2,1);
+}
+.ed-result-cta { text-align: center; margin-top: 1rem; }
+
+@media (max-width: 720px) {
+  .ed-result-body { grid-template-columns: 1fr; }
+  .ed-result-rows { grid-template-columns: 1fr; }
+  .ed-radar { margin-top: 1rem; }
+  .ed-hero-cta { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+  .ed-quiz-foot { flex-wrap: wrap; gap: 0.75rem; }
+  .ed-hint { order: 3; width: 100%; text-align: center; }
+}
+
+/* ================================
+   方案 B · Console / SaaS 風
+================================ */
+.cs-wrap {
+  --cs-bg: #F7F7F5;
+  --cs-panel: #FFFFFF;
+  --cs-ink: #101014;
+  --cs-dim: #8A8A92;
+  --cs-border: #E4E4E0;
+  --cs-border-strong: #CFCFC8;
+  --cs-muted: #F0F0EC;
+  --cs-grid: rgba(0,0,0,0.04);
+  background: var(--cs-bg); color: var(--cs-ink);
+  min-height: 100vh;
+  font-family: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+  background-image:
+    linear-gradient(var(--cs-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cs-grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.cs-dark {
+  --cs-bg: #0B0C10;
+  --cs-panel: #141519;
+  --cs-ink: #EDEDE8;
+  --cs-dim: #7A7B82;
+  --cs-border: #25262C;
+  --cs-border-strong: #33343B;
+  --cs-muted: #1B1C22;
+  --cs-grid: rgba(255,255,255,0.03);
+  color-scheme: dark;
+}
+.cs-mono { font-family: 'JetBrains Mono', 'DM Mono', ui-monospace, monospace; font-feature-settings: 'tnum'; }
+.cs-dim { color: var(--cs-dim); }
+.cs-hl { color: var(--accent); }
+
+/* Topbar */
+.cs-topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.9rem 1.5rem; border-bottom: 1px solid var(--cs-border);
+  background: var(--cs-panel);
+  font-size: 0.78rem;
+  font-family: 'JetBrains Mono', monospace;
+  position: sticky; top: 0; z-index: 5;
+}
+.cs-topbar-l, .cs-topbar-r { display: flex; align-items: center; gap: 0.6rem; }
+.cs-logo { color: var(--accent); font-size: 1rem; }
+.cs-logo-t { font-weight: 600; letter-spacing: 0.02em; }
+.cs-chip {
+  font-size: 0.65rem; padding: 2px 6px; border-radius: 3px;
+  background: var(--cs-muted); color: var(--cs-dim);
+  border: 1px solid var(--cs-border);
+}
+
+/* HERO B */
+.cs-hero { min-height: 100vh; }
+.cs-hero-body {
+  max-width: 1280px; margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 4vw, 2.5rem);
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: 3rem; align-items: center;
+}
+.cs-eyebrow {
+  font-size: 0.72rem; font-family: 'JetBrains Mono', monospace;
+  color: var(--cs-dim); letter-spacing: 0.05em;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 0.8rem; border: 1px solid var(--cs-border);
+  border-radius: 99px; background: var(--cs-panel);
+  margin-bottom: 1.5rem;
+}
+.cs-dot-live {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 0 3px rgba(91,91,214,0.18);
+  animation: csPulse 2s ease-in-out infinite;
+}
+@keyframes csPulse { 50% { opacity: 0.4; } }
+
+.cs-hero-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 900; line-height: 1.02;
+  letter-spacing: -0.03em; margin-bottom: 0.5rem;
+}
+.cs-hero-en {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: 1.3rem; color: var(--cs-dim); margin-bottom: 1.75rem;
+}
+.cs-hero-en em { color: var(--accent); font-style: italic; }
+.cs-hero-sub {
+  font-size: 0.95rem; line-height: 1.8;
+  max-width: 480px; margin-bottom: 2rem;
+  color: var(--cs-ink);
+}
+
+.cs-btn {
+  background: var(--cs-ink); color: var(--cs-bg);
+  padding: 0.9rem 1.6rem; font-size: 0.85rem;
+  font-weight: 600; letter-spacing: 0.02em;
+  border-radius: 6px;
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  transition: all 0.2s ease;
+}
+.cs-btn:hover { background: var(--accent); color: #fff; transform: translateY(-1px); }
+.cs-btn span { opacity: 0.7; }
+
+.cs-hero-meta {
+  margin-top: 2.5rem;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem;
+  border-top: 1px solid var(--cs-border); padding-top: 1.5rem;
+  max-width: 520px;
+}
+.cs-hero-meta > div { display: flex; flex-direction: column; gap: 3px; font-size: 0.85rem; }
+.cs-hero-meta .cs-dim { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.cs-hero-meta b { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+
+/* panels */
+.cs-panel {
+  background: var(--cs-panel);
+  border: 1px solid var(--cs-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.cs-panel-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--cs-border);
+  background: var(--cs-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+}
+.cs-panel-body { padding: 0.5rem; }
+
+.cs-type-row {
+  display: grid; grid-template-columns: auto auto 1fr auto;
+  align-items: center; gap: 0.9rem;
+  padding: 0.75rem 0.6rem;
+  border-bottom: 1px dashed var(--cs-border);
+  font-size: 0.85rem;
+}
+.cs-type-row:last-child { border-bottom: none; }
+.cs-type-code { font-family: 'JetBrains Mono', monospace; color: var(--cs-dim); font-size: 0.75rem; }
+.cs-type-sym {
+  width: 28px; height: 28px; border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 0.78rem;
+  color: #fff;
+}
+.cs-type-sym.sm { width: 22px; height: 22px; font-size: 0.68rem; }
+.cs-type-sym[data-c="S"] { background: #5B5BD6; }
+.cs-type-sym[data-c="E"] { background: #E5484D; }
+.cs-type-sym[data-c="C"] { background: #30A46C; }
+.cs-type-sym[data-c="R"] { background: #F76B15; }
+.cs-type-sym[data-c="A"] { background: #0091FF; }
+.cs-type-name { display: flex; flex-direction: column; gap: 2px; }
+.cs-type-name b { font-weight: 600; font-size: 0.9rem; }
+.cs-type-name span { font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; }
+.cs-type-tag {
+  font-size: 0.75rem; color: var(--cs-dim);
+  font-family: 'Noto Serif TC', serif; font-style: italic;
+}
+
+/* QUIZ B */
+.cs-quiz { min-height: 100vh; }
+.cs-quiz-grid {
+  max-width: 1280px; margin: 0 auto;
+  padding: 2rem clamp(1.25rem, 4vw, 2.5rem);
+  display: grid; grid-template-columns: 1fr 340px;
+  gap: 2rem; align-items: start;
+}
+.cs-q-main { min-width: 0; }
+.cs-q-prog {
+  background: var(--cs-panel); border: 1px solid var(--cs-border);
+  border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+}
+.cs-q-prog-row { display: flex; justify-content: space-between; margin-bottom: 0.7rem; }
+.cs-q-bar {
+  display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px;
+}
+.cs-q-tick { height: 6px; background: var(--cs-border); border-radius: 2px; transition: all 0.3s ease; }
+.cs-q-tick.on { background: var(--accent); }
+.cs-q-tick.cur { background: var(--accent); box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 25%, transparent); }
+
+.cs-q-body {
+  background: var(--cs-panel); border: 1px solid var(--cs-border);
+  border-radius: 8px; padding: 2rem;
+  animation: csFade 0.35s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes csFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.cs-q-zh {
+  font-family: 'Noto Serif TC', serif;
+  font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+  font-weight: 700; line-height: 1.45; margin-bottom: 0.3rem;
+}
+.cs-q-en {
+  font-family: 'Fraunces', serif; font-style: italic;
+  color: var(--cs-dim); font-size: 0.95rem; margin-bottom: 1.75rem;
+}
+.cs-opts { display: flex; flex-direction: column; gap: 0.55rem; }
+.cs-opt {
+  display: grid; grid-template-columns: auto 1fr auto;
+  align-items: center; gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--cs-border); border-radius: 6px;
+  background: var(--cs-bg); text-align: left;
+  transition: all 0.15s ease;
+  font-size: 0.88rem;
+}
+.cs-opt:hover { border-color: var(--accent); transform: translateY(-1px); }
+.cs-opt.is-picked {
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 8%, var(--cs-bg));
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.cs-opt-key {
+  width: 26px; height: 26px; border-radius: 4px;
+  background: var(--cs-muted); border: 1px solid var(--cs-border);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 600;
+  color: var(--cs-dim);
+}
+.cs-opt.is-picked .cs-opt-key,
+.cs-opt:hover .cs-opt-key {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.cs-opt-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cs-opt-zh { line-height: 1.5; }
+.cs-opt-en {
+  font-family: 'Fraunces', serif; font-style: italic;
+  color: var(--cs-dim); font-size: 0.78rem; line-height: 1.4;
+}
+.cs-opt-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+  color: var(--cs-dim); padding: 2px 6px;
+  border: 1px dashed var(--cs-border); border-radius: 3px;
+  white-space: nowrap;
+}
+.cs-opt.is-picked .cs-opt-tag { color: var(--accent); border-color: var(--accent); border-style: solid; }
+
+.cs-q-foot {
+  margin-top: 1.25rem; display: flex; justify-content: space-between; align-items: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+}
+.cs-btn-ghost {
+  font-size: 0.78rem; padding: 0.5rem 0.9rem;
+  border: 1px solid var(--cs-border); border-radius: 5px;
+  color: var(--cs-ink); background: var(--cs-panel);
+  transition: all 0.15s;
+}
+.cs-btn-ghost:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.cs-btn-ghost:disabled { opacity: 0.35; cursor: not-allowed; }
+.cs-hint { color: var(--cs-dim); }
+
+/* SIDE */
+.cs-side { display: flex; flex-direction: column; gap: 1.25rem; position: sticky; top: 72px; }
+.cs-live { padding: 0.75rem; display: flex; flex-direction: column; gap: 0.8rem; }
+.cs-live-row {}
+.cs-live-head {
+  display: flex; align-items: center; gap: 0.6rem;
+  font-size: 0.8rem; margin-bottom: 0.4rem;
+}
+.cs-live-name { flex: 1; }
+.cs-live-bar {
+  height: 6px; background: var(--cs-muted); border-radius: 3px; overflow: hidden;
+}
+.cs-live-bar > div {
+  height: 100%; background: var(--accent);
+  transition: width 0.6s cubic-bezier(.2,.8,.2,1);
+}
+.cs-live-row:first-child .cs-live-bar > div { background: var(--accent); }
+
+.cs-log {
+  padding: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  max-height: 260px; overflow-y: auto;
+}
+.cs-log-row {
+  display: grid; grid-template-columns: auto auto 1fr;
+  gap: 0.5rem; padding: 0.35rem 0.5rem;
+  color: var(--cs-dim); border-radius: 3px;
+}
+.cs-log-row.done { color: var(--cs-ink); }
+.cs-log-row.cur { background: color-mix(in oklab, var(--accent) 10%, transparent); color: var(--accent); }
+
+/* RESULT B */
+.cs-result { min-height: 100vh; }
+.cs-report {
+  max-width: 1280px; margin: 0 auto;
+  padding: 2rem clamp(1.25rem, 4vw, 2.5rem) 4rem;
+  display: flex; flex-direction: column; gap: 1.5rem;
+  animation: csFade 0.5s both;
+}
+.cs-report-hero {
+  display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem;
+  padding: 2.5rem; background: var(--cs-panel);
+  border: 1px solid var(--cs-border); border-radius: 12px;
+  position: relative; overflow: hidden;
+}
+.cs-report-hero::before {
+  content: ''; position: absolute; top: -120px; right: -120px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
+  filter: blur(40px); pointer-events: none;
+}
+.cs-report-hero-l { position: relative; z-index: 1; }
+.cs-report-hero-r { position: relative; z-index: 1; align-self: center; }
+.cs-report-badge {
+  display: inline-flex; align-items: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  padding: 0.3rem 0.7rem; border-radius: 99px;
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+  color: var(--accent); letter-spacing: 0.1em; font-weight: 600;
+  margin: 0.5rem 0 1rem;
+}
+.cs-report-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: clamp(3rem, 7vw, 5rem);
+  font-weight: 900; line-height: 1; letter-spacing: -0.03em;
+  margin-bottom: 0.3rem;
+  display: flex; flex-direction: column;
+}
+.cs-report-en {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: 1.3rem; color: var(--cs-dim); font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.cs-report-tagline {
+  font-family: 'Noto Serif TC', serif; font-size: 1.05rem;
+  color: var(--cs-ink); margin: 1rem 0 1.25rem;
+}
+.cs-report-desc {
+  font-size: 0.95rem; line-height: 1.85; max-width: 540px;
+  margin-bottom: 1.25rem;
+}
+.cs-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.cs-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  color: var(--cs-dim); padding: 0.25rem 0.6rem;
+  border: 1px solid var(--cs-border); border-radius: 99px;
+  background: var(--cs-bg);
+}
+
+.cs-bars { display: flex; flex-direction: column; gap: 0.9rem; padding: 0.5rem; }
+.cs-bar-row {}
+.cs-bar-label {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.85rem; margin-bottom: 0.3rem;
+}
+.cs-bar-label > span:last-child { flex: 1; }
+.cs-bar-track {
+  position: relative; height: 28px; border-radius: 5px;
+  background: var(--cs-muted); overflow: hidden;
+}
+.cs-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent) 70%, transparent));
+  animation: csBarIn 1.1s cubic-bezier(.2,.8,.2,1) both;
+}
+.cs-bar-row.top .cs-bar-fill { background: var(--accent); }
+@keyframes csBarIn { from { width: 0 !important; } }
+.cs-bar-v {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  font-size: 0.75rem; color: var(--cs-ink); mix-blend-mode: difference; color: #fff;
+}
+
+.cs-report-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.cs-card .cs-panel-body { padding: 1rem 1.2rem; }
+.cs-ul { list-style: none; }
+.cs-ul li {
+  font-size: 0.88rem; line-height: 1.6;
+  padding: 0.55rem 0; border-bottom: 1px dashed var(--cs-border);
+  padding-left: 1.1rem; position: relative;
+}
+.cs-ul li:last-child { border-bottom: none; }
+.cs-ul li::before {
+  content: '▸'; position: absolute; left: 0; color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.cs-dist { padding: 0.25rem 0; }
+.cs-dist-row {
+  display: grid;
+  grid-template-columns: 40px 40px 1.5fr 80px 60px 1fr;
+  align-items: center; gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--cs-border);
+}
+.cs-dist-row:last-child { border-bottom: none; }
+.cs-dist-row.cs-dist-head {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+  color: var(--cs-dim); letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--cs-muted);
+}
+.cs-dist-row.top { background: color-mix(in oklab, var(--accent) 5%, transparent); }
+.cs-dist-row.top > span:nth-child(3) { color: var(--accent); font-weight: 600; }
+.cs-dist-bar { height: 6px; background: var(--cs-muted); border-radius: 3px; overflow: hidden; }
+.cs-dist-bar > div {
+  height: 100%; background: var(--accent);
+  animation: csBarIn 1.1s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.cs-result-cta {
+  display: flex; gap: 0.75rem; justify-content: center;
+  margin-top: 1rem;
+}
+
+@media (max-width: 900px) {
+  .cs-hero-body { grid-template-columns: 1fr; gap: 2rem; }
+  .cs-quiz-grid { grid-template-columns: 1fr; }
+  .cs-side { position: static; }
+  .cs-report-hero { grid-template-columns: 1fr; }
+  .cs-hero-meta { grid-template-columns: repeat(2, 1fr); }
+  .cs-dist-row {
+    grid-template-columns: 30px 32px 1fr 60px;
+    font-size: 0.78rem;
+  }
+  .cs-dist-row > span:nth-child(5),
+  .cs-dist-row > span:nth-child(6) { display: none; }
+}
+
+/* ================================
+   TWEAKS 面板
+================================ */
+.tw-panel {
+  position: fixed; bottom: 1rem; right: 1rem;
+  background: #111; color: #f5f5f0;
+  border-radius: 8px; padding: 0.9rem 1rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  z-index: 100;
+  display: none; flex-direction: column; gap: 0.75rem;
+  min-width: 240px; max-width: 280px;
+}
+.tw-panel.open { display: flex; }
+.tw-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 0.5rem; border-bottom: 1px solid #2a2a2a;
+}
+.tw-head b { font-weight: 600; letter-spacing: 0.05em; }
+.tw-close { font-size: 1rem; line-height: 1; color: #888; }
+.tw-row { display: flex; flex-direction: column; gap: 0.4rem; }
+.tw-row label { font-size: 0.68rem; color: #888; letter-spacing: 0.1em; text-transform: uppercase; }
+.tw-seg {
+  display: flex; gap: 3px; background: #1d1d1d;
+  padding: 3px; border-radius: 6px;
+}
+.tw-seg button {
+  flex: 1; padding: 0.4rem 0.5rem; font-size: 0.7rem;
+  color: #aaa; border-radius: 4px;
+  transition: all 0.15s ease; font-family: inherit;
+}
+.tw-seg button.on { background: #333; color: #fff; }
+.tw-swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+.tw-swatch {
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 2px solid transparent; cursor: pointer; padding: 0;
+  transition: transform 0.15s;
+}
+.tw-swatch.on { border-color: #fff; }
+.tw-swatch:hover { transform: scale(1.1); }
+.tw-check {
+  display: flex; align-items: center; gap: 0.5rem;
+  cursor: pointer; user-select: none;
+}
+.tw-check input { accent-color: #f76b15; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <div id="tw-panel" class="tw-panel">
+    <div class="tw-head">
+      <b>TWEAKS</b>
+      <button class="tw-close" onclick="window.__tw.close()">×</button>
+    </div>
+    <div class="tw-row">
+      <label>版本 Variant</label>
+      <div class="tw-seg" id="tw-variant">
+        <button data-v="editorial">A · 雜誌</button>
+        <button data-v="console">B · Console</button>
+      </div>
+    </div>
+    <div class="tw-row">
+      <label>主色 Accent</label>
+      <div class="tw-swatches" id="tw-accent"></div>
+    </div>
+    <div class="tw-row" id="tw-dark-row">
+      <label class="tw-check">
+        <input type="checkbox" id="tw-dark"> 深色模式 Dark Mode
+      </label>
+    </div>
+    <div class="tw-row">
+      <label class="tw-check">
+        <input type="checkbox" id="tw-keys" checked> 顯示鍵盤提示
+      </label>
+    </div>
+  </div>
+
+  <script>
+// 共用資料：類型 + 題目（雙語）
+window.QUIZ_DATA = {
+  types: {
+    S: {
+      code: 'S',
+      zh: '策略家',
+      en: 'Strategist',
+      tagline_zh: '先看全局，再落子',
+      tagline_en: 'Sees the board before the move',
+      tags_zh: ['規劃導向', '系統思考', '長遠視野', '結構化'],
+      tags_en: ['Planner', 'Systems', 'Long-term', 'Structured'],
+      desc_zh: '你是天生的規劃者。面對任何任務，你習慣先建立全局視野，再逐步拆解執行。你的優勢在於能看見別人看不到的風險與機會，並在混亂中維持方向感。在團隊中，你常是那個讓大家「知道為什麼要這麼做」的人。',
+      desc_en: 'You are a natural planner. You build the big picture before moving, and you keep the team anchored to why.',
+      strengths_zh: ['看得遠、想得深', '能在混亂中定錨', '善於拆解複雜問題'],
+      blindspots_zh: ['過度規劃而拖延行動', '對臨場調整感到焦慮', '可能忽略情緒面的需求'],
+      pairs_zh: ['執行者（幫你落地）', '分析師（幫你驗證）'],
+      roles_zh: ['產品經理', '策略顧問', '營運主管']
+    },
+    E: {
+      code: 'E',
+      zh: '執行者',
+      en: 'Executor',
+      tagline_zh: '先做了再說',
+      tagline_en: 'Makes things happen',
+      tags_zh: ['行動派', '效率優先', '結果導向', '務實'],
+      tags_en: ['Action', 'Efficient', 'Results', 'Pragmatic'],
+      desc_zh: '你是讓事情真正發生的人。相較於過度規劃，你更相信「先做再調整」的力量。你的執行力強、節奏快，能在壓力下保持冷靜並推動進展。團隊有你在，事情就會動起來。',
+      desc_en: 'You make things move. You trust action over analysis and keep momentum under pressure.',
+      strengths_zh: ['高執行力與節奏感', '壓力下仍能推進', '行動比言語多'],
+      blindspots_zh: ['可能忽略長遠影響', '對慢節奏容易失去耐心', '細節有時被犧牲'],
+      pairs_zh: ['策略家（幫你定向）', '分析師（幫你把關）'],
+      roles_zh: ['專案經理', '營運', '業務開發']
+    },
+    C: {
+      code: 'C',
+      zh: '協調者',
+      en: 'Coordinator',
+      tagline_zh: '讓人與人連起來',
+      tagline_en: 'Connects the people',
+      tags_zh: ['溝通型', '團隊黏著劑', '同理心強', '共識建立'],
+      tags_en: ['Communicator', 'Glue', 'Empathetic', 'Consensus'],
+      desc_zh: '你是團隊運作的潤滑劑。你天生對人與人之間的關係敏感，能在不同立場之間找到共識。你的存在讓團隊更有凝聚力，也讓每個人感覺被聽見。衝突在你手上，往往能化解為合作。',
+      desc_en: 'You are the team\'s connective tissue. You turn conflict into collaboration.',
+      strengths_zh: ['高同理心與傾聽力', '化解衝突、建立共識', '讓每個人被看見'],
+      blindspots_zh: ['怕衝突而回避決斷', '可能被情緒影響判斷', '容易過度承擔'],
+      pairs_zh: ['創意人（幫你發想）', '策略家（幫你結構）'],
+      roles_zh: ['HR / People', '客戶經理', '團隊主管']
+    },
+    R: {
+      code: 'R',
+      zh: '創意人',
+      en: 'Creator',
+      tagline_zh: '從沒人走過的那條',
+      tagline_en: 'Takes the untaken path',
+      tags_zh: ['跳躍思考', '點子王', '不拘框架', '發散型'],
+      tags_en: ['Divergent', 'Ideator', 'Unboxed', 'Expansive'],
+      desc_zh: '你是靈感與可能性的來源。你的大腦不走尋常路，常在別人覺得「就這樣了」的時候，提出讓人眼睛一亮的新角度。雖然有時讓人跟不上，但你帶來的創新往往是突破的關鍵。',
+      desc_en: 'You are a source of ideas. You find the angle everyone else missed.',
+      strengths_zh: ['跳躍式連結能力強', '不被框架限制', '帶來突破性想法'],
+      blindspots_zh: ['點子多但收斂難', '不喜歡重複性任務', '他人可能跟不上節奏'],
+      pairs_zh: ['執行者（幫你落地）', '協調者（幫你翻譯）'],
+      roles_zh: ['設計師', '品牌策略', 'R&D']
+    },
+    A: {
+      code: 'A',
+      zh: '分析師',
+      en: 'Analyst',
+      tagline_zh: '有憑有據才放行',
+      tagline_en: 'Proof before progress',
+      tags_zh: ['數據導向', '謹慎細心', '邏輯清晰', '品質把關'],
+      tags_en: ['Data', 'Rigorous', 'Logical', 'Quality'],
+      desc_zh: '你是團隊的品質守門員。你不輕易接受「大概是這樣」，而是追求有憑有據的結論。你的謹慎讓決策更穩健，你找出的細節問題，往往能在爆炸前就被阻止。',
+      desc_en: 'You are the quality gate. You demand evidence and catch what others miss.',
+      strengths_zh: ['邏輯清晰、推論嚴謹', '抓細節的眼力', '以證據說話'],
+      blindspots_zh: ['追求完美而行動慢', '對模糊狀態不適應', '可能顯得過度批判'],
+      pairs_zh: ['創意人（幫你發想）', '執行者（幫你推進）'],
+      roles_zh: ['資料分析', '品質管理', '研究員']
+    }
+  },
+  questions: [
+    {
+      zh: '接到一個新任務，你的第一個動作是？',
+      en: 'You just got a new task. What\'s your first move?',
+      opts: [
+        { zh: '先規劃整體時程與里程碑', en: 'Map out the timeline and milestones', type: 'S' },
+        { zh: '馬上開始做，邊做邊調整', en: 'Start immediately, adjust as I go', type: 'E' },
+        { zh: '找組員討論如何分工', en: 'Sync with the team on who does what', type: 'C' },
+        { zh: '思考有沒有更好的做法', en: 'Ask if there\'s a better way to do this', type: 'R' },
+        { zh: '先搜集相關資料與案例', en: 'Gather reference material first', type: 'A' }
+      ]
+    },
+    {
+      zh: '開會時，你通常是哪種角色？',
+      en: 'In meetings, which role do you play?',
+      opts: [
+        { zh: '事先準備好議程與目標', en: 'Prep the agenda and goals beforehand', type: 'S' },
+        { zh: '邊討論邊推進，讓會議有進展', en: 'Drive toward decisions, keep things moving', type: 'E' },
+        { zh: '確保每個人都有機會發言', en: 'Make sure everyone is heard', type: 'C' },
+        { zh: '突然提出讓大家想一想的新角度', en: 'Drop a fresh angle nobody considered', type: 'R' },
+        { zh: '負責記錄重點、數字、決議', en: 'Capture notes, numbers, and decisions', type: 'A' }
+      ]
+    },
+    {
+      zh: '截止日快到了，你的反應是？',
+      en: 'Deadline is closing in. How do you react?',
+      opts: [
+        { zh: '早就有備案，按計畫收尾', en: 'Already had a plan B — execute it', type: 'S' },
+        { zh: '衝！集中火力加速完成', en: 'Full throttle, push through', type: 'E' },
+        { zh: '看看有沒有人需要幫忙或資源', en: 'Check who needs help or resources', type: 'C' },
+        { zh: '想想有沒有更快的做法', en: 'Look for a faster path', type: 'R' },
+        { zh: '重新檢查有無遺漏或錯誤', en: 'Double-check for gaps and errors', type: 'A' }
+      ]
+    },
+    {
+      zh: '你最難忍受的工作狀態是？',
+      en: 'What kind of work state drives you nuts?',
+      opts: [
+        { zh: '毫無計畫、走一步算一步', en: 'No plan, winging it', type: 'S' },
+        { zh: '一直開會、遲遲不行動', en: 'Endless meetings, zero action', type: 'E' },
+        { zh: '各自為政、沒有溝通', en: 'Silos, no communication', type: 'C' },
+        { zh: '一直重複做同樣的事', en: 'Doing the same thing over and over', type: 'R' },
+        { zh: '靠感覺做決定、沒有依據', en: 'Decisions by gut with no evidence', type: 'A' }
+      ]
+    },
+    {
+      zh: '同事來找你討論問題，你通常怎麼回應？',
+      en: 'A teammate brings you a problem. You…',
+      opts: [
+        { zh: '給出一個有架構的分析與建議', en: 'Give a structured analysis and recommendation', type: 'S' },
+        { zh: '直接說「我覺得應該這樣做」', en: 'Just tell them what I\'d do', type: 'E' },
+        { zh: '先問他自己的想法是什麼', en: 'Ask what they\'re thinking first', type: 'C' },
+        { zh: '提出一個意想不到的新角度', en: 'Offer an unexpected angle', type: 'R' },
+        { zh: '先查看有無相關資料或前例', en: 'Check for data or precedent first', type: 'A' }
+      ]
+    },
+    {
+      zh: '你覺得一個「好的工作成果」是什麼？',
+      en: 'What counts as a great outcome for you?',
+      opts: [
+        { zh: '有達到原訂的計畫目標', en: 'Hit the original plan and goals', type: 'S' },
+        { zh: '在時限內快速有效地完成', en: 'Shipped fast and effectively on time', type: 'E' },
+        { zh: '大家都滿意、沒有人不開心', en: 'Everyone\'s happy, nobody left behind', type: 'C' },
+        { zh: '有創新、做出之前沒人做過的東西', en: 'Something genuinely new', type: 'R' },
+        { zh: '零錯誤、有完整的紀錄與依據', en: 'Zero defects, fully documented', type: 'A' }
+      ]
+    },
+    {
+      zh: '你的桌面或電腦資料夾通常是？',
+      en: 'Your desktop / folders usually look like…',
+      opts: [
+        { zh: '分類整齊、有清楚的架構', en: 'Tidy, clearly structured', type: 'S' },
+        { zh: '東西放哪我知道就好，不一定整齊', en: 'I know where things are, messy is fine', type: 'E' },
+        { zh: '有共用資料夾讓團隊一起存取', en: 'Shared folders for the whole team', type: 'C' },
+        { zh: '亂，但我有自己的邏輯', en: 'Chaos, but it makes sense to me', type: 'R' },
+        { zh: '有命名規則、版本號和備份', en: 'Naming conventions, versions, backups', type: 'A' }
+      ]
+    },
+    {
+      zh: '最能讓你有成就感的瞬間是？',
+      en: 'Your proudest moment at work is when…',
+      opts: [
+        { zh: '計畫被完整執行，結果符合預期', en: 'The plan executed exactly as designed', type: 'S' },
+        { zh: '在時限內搞定一件困難的事', en: 'I pulled off something hard on time', type: 'E' },
+        { zh: '幫助別人解決他解決不了的問題', en: 'I helped someone solve their block', type: 'C' },
+        { zh: '做出一個從來沒人做過的東西', en: 'I made something that didn\'t exist', type: 'R' },
+        { zh: '找出別人都沒發現的關鍵問題', en: 'I caught the critical issue nobody saw', type: 'A' }
+      ]
+    }
+  ]
+};
+  </script>
+
+  <script type="text/babel">
+// 方案 A：編輯雜誌風升級版
+const { useState, useEffect, useRef, useMemo } = React;
+
+function EditorialQuiz({ accent = '#D4521A', showKeys = true }) {
+  const { types, questions } = window.QUIZ_DATA;
+  const [stage, setStage] = useState('hero'); // hero | quiz | result
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
+  const [dir, setDir] = useState(1); // 動畫方向
+
+  // 分數計算
+  const scores = useMemo(() => {
+    const s = { S: 0, E: 0, C: 0, R: 0, A: 0 };
+    answers.forEach((a) => { if (a) s[a]++; });
+    return s;
+  }, [answers]);
+
+  const total = questions.length;
+  const answered = answers.filter(Boolean).length;
+  const topKey = useMemo(() => {
+    return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  }, [scores]);
+
+  // 鍵盤
+  useEffect(() => {
+    const onKey = (e) => {
+      if (stage !== 'quiz') return;
+      const q = questions[idx];
+      if (/^[1-5]$/.test(e.key)) {
+        const n = parseInt(e.key, 10) - 1;
+        if (n < q.opts.length) selectOpt(q.opts[n].type);
+      } else if (e.key === 'ArrowLeft' && idx > 0) {
+        setDir(-1); setIdx(idx - 1);
+      } else if (e.key === 'ArrowRight' && answers[idx]) {
+        setDir(1); next();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [stage, idx, answers]);
+
+  function start() {
+    setAnswers(Array(questions.length).fill(null));
+    setIdx(0); setDir(1); setStage('quiz');
+  }
+
+  function selectOpt(type) {
+    const nxt = [...answers]; nxt[idx] = type; setAnswers(nxt);
+    setTimeout(() => {
+      if (idx < total - 1) { setDir(1); setIdx(idx + 1); }
+      else setStage('result');
+    }, 320);
+  }
+
+  function next() {
+    if (idx < total - 1) { setDir(1); setIdx(idx + 1); }
+    else setStage('result');
+  }
+  function prev() { if (idx > 0) { setDir(-1); setIdx(idx - 1); } }
+  function retry() {
+    setAnswers(Array(questions.length).fill(null));
+    setIdx(0); setStage('hero');
+  }
+
+  return (
+    <div className="ed-wrap" style={{ '--accent': accent }}>
+      {stage === 'hero' && <Hero onStart={start} />}
+      {stage === 'quiz' && (
+        <QuizView
+          idx={idx} dir={dir} total={total}
+          q={questions[idx]} picked={answers[idx]}
+          onPick={selectOpt} onPrev={prev} onNext={next}
+          showKeys={showKeys}
+        />
+      )}
+      {stage === 'result' && (
+        <Result
+          topKey={topKey} scores={scores} types={types}
+          total={total} onRetry={retry}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ────────── HERO ────────── */
+function Hero({ onStart }) {
+  return (
+    <section className="ed-hero">
+      <div className="ed-hero-grid">
+        <div className="ed-hero-top">
+          <div className="ed-mast">
+            <span className="ed-mast-num">NO. 08</span>
+            <span className="ed-mast-dot">·</span>
+            <span>WORK STYLE ISSUE</span>
+            <span className="ed-mast-dot">·</span>
+            <span>APR 2026</span>
+          </div>
+          <div className="ed-hero-label">Self&nbsp;Assessment / 自我檢測</div>
+        </div>
+
+        <div className="ed-hero-center">
+          <div className="ed-hero-kicker">FIND YOUR TYPE</div>
+          <h1 className="ed-hero-title">
+            你是哪種<br/>
+            <span className="ed-accent">工作風格</span>？
+          </h1>
+          <div className="ed-hero-en">Which <em>work style</em> are you?</div>
+
+          <p className="ed-hero-sub">
+            8 個情境題，找出你在職場中最自然的<br/>
+            行為模式、優勢傾向，以及盲點。
+          </p>
+
+          <div className="ed-hero-cta">
+            <button className="ed-btn-primary" onClick={onStart}>
+              開始測驗 <span className="ed-arr">→</span>
+            </button>
+            <div className="ed-hero-meta">
+              <span>約 3 分鐘</span>
+              <span className="ed-hero-bar" />
+              <span>8 題</span>
+              <span className="ed-hero-bar" />
+              <span>5 種類型</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="ed-hero-foot">
+          <div className="ed-hero-types">
+            {['策略家 · Strategist', '執行者 · Executor', '協調者 · Coordinator', '創意人 · Creator', '分析師 · Analyst'].map((t, i) => (
+              <div key={i} className="ed-hero-type">
+                <span className="ed-idx">{String(i + 1).padStart(2, '0')}</span>
+                <span>{t}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ────────── QUIZ ────────── */
+function QuizView({ idx, dir, total, q, picked, onPick, onPrev, onNext, showKeys }) {
+  const pct = Math.round(((idx + (picked ? 1 : 0)) / total) * 100);
+  return (
+    <section className="ed-quiz">
+      <header className="ed-quiz-head">
+        <div className="ed-quiz-head-l">
+          <span className="ed-sm">Question</span>
+          <span className="ed-bignum">{String(idx + 1).padStart(2, '0')}</span>
+          <span className="ed-sm ed-muted">/ {String(total).padStart(2, '0')}</span>
+        </div>
+        <div className="ed-quiz-head-r">
+          <span className="ed-sm ed-muted">進度 · Progress</span>
+          <span className="ed-sm">{pct}%</span>
+        </div>
+      </header>
+      <div className="ed-progress"><div style={{ width: pct + '%' }} /></div>
+
+      <div key={idx} className={`ed-q ${dir > 0 ? 'ed-in-r' : 'ed-in-l'}`}>
+        <div className="ed-q-zh">{q.zh}</div>
+        <div className="ed-q-en">{q.en}</div>
+
+        <div className="ed-opts">
+          {q.opts.map((o, i) => (
+            <button
+              key={i}
+              className={`ed-opt ${picked === o.type ? 'is-picked' : ''}`}
+              onClick={() => onPick(o.type)}
+            >
+              <span className="ed-opt-k">{String.fromCharCode(65 + i)}</span>
+              <span className="ed-opt-body">
+                <span className="ed-opt-zh">{o.zh}</span>
+                <span className="ed-opt-en">{o.en}</span>
+              </span>
+              {showKeys && <span className="ed-opt-key">{i + 1}</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <footer className="ed-quiz-foot">
+        <button className="ed-btn-ghost" onClick={onPrev} disabled={idx === 0}>← 上一題</button>
+        {showKeys && (
+          <div className="ed-hint">
+            <kbd>1</kbd>–<kbd>5</kbd> 選擇 · <kbd>←</kbd><kbd>→</kbd> 切換
+          </div>
+        )}
+        <button className="ed-btn-ghost" onClick={onNext} disabled={!picked}>下一題 →</button>
+      </footer>
+    </section>
+  );
+}
+
+/* ────────── RESULT ────────── */
+function Result({ topKey, scores, types, total, onRetry }) {
+  const t = types[topKey];
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+
+  return (
+    <section className="ed-result">
+      <div className="ed-result-mast">
+        <span>RESULT · 個人側寫</span>
+        <span className="ed-mast-dot">·</span>
+        <span>TYPE {t.code}</span>
+      </div>
+
+      <div className="ed-result-head">
+        <div className="ed-result-kicker">你的工作風格是</div>
+        <h1 className="ed-result-title">
+          <span className="ed-accent">{t.zh}</span>
+        </h1>
+        <div className="ed-result-en">The {t.en}</div>
+        <div className="ed-result-tagline">「{t.tagline_zh}」</div>
+      </div>
+
+      <div className="ed-result-body">
+        <div className="ed-result-col-main">
+          <div className="ed-col-label">01 — 描述</div>
+          <p className="ed-result-desc">{t.desc_zh}</p>
+          <p className="ed-result-desc-en">{t.desc_en}</p>
+
+          <div className="ed-tags">
+            {t.tags_zh.map((tag, i) => <span key={i} className="ed-tag">{tag}</span>)}
+          </div>
+        </div>
+
+        <div className="ed-result-col-side">
+          <Radar scores={scores} total={total} types={types} topKey={topKey} />
+        </div>
+      </div>
+
+      <div className="ed-result-rows">
+        <div className="ed-row">
+          <div className="ed-col-label">02 — 你的優勢 Strengths</div>
+          <ul className="ed-ul">{t.strengths_zh.map((s, i) => <li key={i}>{s}</li>)}</ul>
+        </div>
+        <div className="ed-row">
+          <div className="ed-col-label">03 — 可能的盲點 Blindspots</div>
+          <ul className="ed-ul">{t.blindspots_zh.map((s, i) => <li key={i}>{s}</li>)}</ul>
+        </div>
+        <div className="ed-row">
+          <div className="ed-col-label">04 — 黃金搭檔 Pairs</div>
+          <ul className="ed-ul">{t.pairs_zh.map((s, i) => <li key={i}>{s}</li>)}</ul>
+        </div>
+        <div className="ed-row">
+          <div className="ed-col-label">05 — 適合的角色 Roles</div>
+          <ul className="ed-ul">{t.roles_zh.map((s, i) => <li key={i}>{s}</li>)}</ul>
+        </div>
+      </div>
+
+      <div className="ed-scores">
+        <div className="ed-col-label">06 — 完整分佈 Distribution</div>
+        <div className="ed-score-list">
+          {sorted.map(([k, v]) => {
+            const pct = Math.round((v / total) * 100);
+            return (
+              <div key={k} className={`ed-score ${k === topKey ? 'is-top' : ''}`}>
+                <div className="ed-score-head">
+                  <span className="ed-score-name">{types[k].zh} · {types[k].en}</span>
+                  <span className="ed-score-v">{v}/{total} · {pct}%</span>
+                </div>
+                <div className="ed-score-bar"><div style={{ width: pct + '%' }} /></div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="ed-result-cta">
+        <button className="ed-btn-primary" onClick={onRetry}>重新測驗 →</button>
+      </div>
+    </section>
+  );
+}
+
+/* 五軸雷達圖 */
+function Radar({ scores, total, types, topKey }) {
+  const keys = ['S', 'E', 'C', 'R', 'A'];
+  const size = 240, cx = size / 2, cy = size / 2, r = 90;
+  const pts = keys.map((k, i) => {
+    const angle = (Math.PI * 2 * i) / keys.length - Math.PI / 2;
+    const v = scores[k] / total; // 0..1
+    return {
+      x: cx + Math.cos(angle) * r * v,
+      y: cy + Math.sin(angle) * r * v,
+      lx: cx + Math.cos(angle) * (r + 22),
+      ly: cy + Math.sin(angle) * (r + 22),
+      label: types[k].zh, code: k,
+    };
+  });
+  const path = pts.map((p, i) => (i ? 'L' : 'M') + p.x + ',' + p.y).join(' ') + ' Z';
+  return (
+    <div className="ed-radar">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        {[0.25, 0.5, 0.75, 1].map((f, i) => {
+          const pp = keys.map((_, j) => {
+            const a = (Math.PI * 2 * j) / keys.length - Math.PI / 2;
+            return `${cx + Math.cos(a) * r * f},${cy + Math.sin(a) * r * f}`;
+          }).join(' ');
+          return <polygon key={i} points={pp} fill="none" stroke="#E0DBD4" strokeWidth="1" />;
+        })}
+        {keys.map((_, i) => {
+          const a = (Math.PI * 2 * i) / keys.length - Math.PI / 2;
+          return <line key={i} x1={cx} y1={cy} x2={cx + Math.cos(a) * r} y2={cy + Math.sin(a) * r} stroke="#E0DBD4" strokeWidth="1" />;
+        })}
+        <path d={path} fill="var(--accent)" fillOpacity="0.18" stroke="var(--accent)" strokeWidth="1.5" />
+        {pts.map((p, i) => (
+          <circle key={i} cx={p.x} cy={p.y} r={p.code === topKey ? 4 : 3}
+            fill={p.code === topKey ? 'var(--accent)' : '#fff'} stroke="var(--accent)" strokeWidth="1.5" />
+        ))}
+        {pts.map((p, i) => (
+          <text key={i} x={p.lx} y={p.ly} textAnchor="middle" dominantBaseline="middle"
+            fontFamily="'Noto Serif TC', serif" fontSize="13" fontWeight="700"
+            fill={p.code === topKey ? 'var(--accent)' : '#1A1A1A'}>
+            {p.label}
+          </text>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+window.EditorialQuiz = EditorialQuiz;
+// 方案 B：Console / SaaS 風（即時儀表板）
+const { useState: useS2, useEffect: useE2, useMemo: useM2 } = React;
+
+function ConsoleQuiz({ accent = '#5B5BD6', dark = false, showKeys = true }) {
+  const { types, questions } = window.QUIZ_DATA;
+  const [stage, setStage] = useS2('hero');
+  const [idx, setIdx] = useS2(0);
+  const [answers, setAnswers] = useS2(Array(questions.length).fill(null));
+
+  const scores = useM2(() => {
+    const s = { S: 0, E: 0, C: 0, R: 0, A: 0 };
+    answers.forEach(a => { if (a) s[a]++; });
+    return s;
+  }, [answers]);
+  const total = questions.length;
+  const topKey = useM2(() =>
+    Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0],
+    [scores]
+  );
+
+  useE2(() => {
+    const onKey = (e) => {
+      if (stage !== 'quiz') return;
+      const q = questions[idx];
+      if (/^[1-5]$/.test(e.key)) {
+        const n = parseInt(e.key, 10) - 1;
+        if (n < q.opts.length) pick(q.opts[n].type);
+      } else if (e.key === 'ArrowLeft' && idx > 0) setIdx(idx - 1);
+      else if (e.key === 'ArrowRight' && answers[idx]) next();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [stage, idx, answers]);
+
+  function start() {
+    setAnswers(Array(questions.length).fill(null));
+    setIdx(0); setStage('quiz');
+  }
+  function pick(type) {
+    const nxt = [...answers]; nxt[idx] = type; setAnswers(nxt);
+    setTimeout(() => {
+      if (idx < total - 1) setIdx(idx + 1);
+      else setStage('result');
+    }, 260);
+  }
+  function next() {
+    if (idx < total - 1) setIdx(idx + 1); else setStage('result');
+  }
+  function retry() {
+    setAnswers(Array(questions.length).fill(null));
+    setIdx(0); setStage('hero');
+  }
+
+  return (
+    <div className={`cs-wrap ${dark ? 'cs-dark' : ''}`} style={{ '--accent': accent }}>
+      {stage === 'hero' && <CSHero onStart={start} types={types} />}
+      {stage === 'quiz' && (
+        <CSQuiz
+          idx={idx} total={total} q={questions[idx]} picked={answers[idx]}
+          onPick={pick} onPrev={() => setIdx(Math.max(0, idx - 1))} onNext={next}
+          scores={scores} answers={answers} types={types}
+          showKeys={showKeys}
+        />
+      )}
+      {stage === 'result' && (
+        <CSResult topKey={topKey} scores={scores} types={types} total={total} onRetry={retry} />
+      )}
+    </div>
+  );
+}
+
+/* ── HERO ── */
+function CSHero({ onStart, types }) {
+  return (
+    <div className="cs-hero">
+      <div className="cs-topbar">
+        <div className="cs-topbar-l">
+          <span className="cs-logo">◆</span>
+          <span className="cs-logo-t">workstyle.dx</span>
+          <span className="cs-chip">v2.0</span>
+        </div>
+        <div className="cs-topbar-r">
+          <span className="cs-dim">assessment</span>
+          <span className="cs-dim">/</span>
+          <span>work_style</span>
+        </div>
+      </div>
+
+      <div className="cs-hero-body">
+        <div className="cs-hero-left">
+          <div className="cs-eyebrow">
+            <span className="cs-dot-live" /> 5 types · 8 questions · ~3 min
+          </div>
+          <h1 className="cs-hero-title">
+            找出你的<br/>
+            <span className="cs-hl">工作風格</span>
+          </h1>
+          <div className="cs-hero-en">Identify your natural <em>work style.</em></div>
+          <p className="cs-hero-sub">
+            一套以情境為基礎的快速診斷，輸出包含五軸分佈、優勢盲點、
+            適合角色與黃金搭檔。作答過程即時計算，邊作答邊看見結果在變化。
+          </p>
+          <button className="cs-btn" onClick={onStart}>
+            開始作答 <span>↵</span>
+          </button>
+          <div className="cs-hero-meta">
+            <div><span className="cs-dim">Duration</span><b>~3:00</b></div>
+            <div><span className="cs-dim">Questions</span><b>08</b></div>
+            <div><span className="cs-dim">Types</span><b>05</b></div>
+            <div><span className="cs-dim">Output</span><b>Report</b></div>
+          </div>
+        </div>
+
+        <div className="cs-hero-right">
+          <div className="cs-panel">
+            <div className="cs-panel-head">
+              <span>types.json</span>
+              <span className="cs-dim">read-only</span>
+            </div>
+            <div className="cs-panel-body">
+              {Object.values(types).map((t, i) => (
+                <div key={t.code} className="cs-type-row">
+                  <span className="cs-type-code">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="cs-type-sym" data-c={t.code}>{t.code}</span>
+                  <div className="cs-type-name">
+                    <b>{t.zh}</b>
+                    <span className="cs-dim">{t.en}</span>
+                  </div>
+                  <span className="cs-type-tag">{t.tagline_zh}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── QUIZ ── */
+function CSQuiz({ idx, total, q, picked, onPick, onPrev, onNext, scores, answers, types, showKeys }) {
+  const answered = answers.filter(Boolean).length;
+  const pct = Math.round((answered / total) * 100);
+  return (
+    <div className="cs-quiz">
+      <div className="cs-topbar">
+        <div className="cs-topbar-l">
+          <span className="cs-logo">◆</span>
+          <span className="cs-logo-t">workstyle.dx</span>
+        </div>
+        <div className="cs-topbar-r">
+          <span className="cs-dim">session</span>
+          <span className="cs-mono">#{String(idx + 1).padStart(2, '0')}</span>
+        </div>
+      </div>
+
+      <div className="cs-quiz-grid">
+        {/* 左：題目 */}
+        <div className="cs-q-main">
+          <div className="cs-q-prog">
+            <div className="cs-q-prog-row">
+              <span>Q{String(idx + 1).padStart(2, '0')} <span className="cs-dim">of {String(total).padStart(2, '0')}</span></span>
+              <span className="cs-dim">completed · {answered}/{total} · {pct}%</span>
+            </div>
+            <div className="cs-q-bar">
+              {Array.from({ length: total }).map((_, i) => (
+                <div key={i} className={`cs-q-tick ${i < answered ? 'on' : ''} ${i === idx ? 'cur' : ''}`} />
+              ))}
+            </div>
+          </div>
+
+          <div key={idx} className="cs-q-body">
+            <div className="cs-q-zh">{q.zh}</div>
+            <div className="cs-q-en">{q.en}</div>
+
+            <div className="cs-opts">
+              {q.opts.map((o, i) => (
+                <button key={i}
+                  className={`cs-opt ${picked === o.type ? 'is-picked' : ''}`}
+                  onClick={() => onPick(o.type)}>
+                  <span className="cs-opt-key">{i + 1}</span>
+                  <span className="cs-opt-body">
+                    <span className="cs-opt-zh">{o.zh}</span>
+                    <span className="cs-opt-en">{o.en}</span>
+                  </span>
+                  <span className="cs-opt-tag">{types[o.type].zh}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="cs-q-foot">
+            <button className="cs-btn-ghost" onClick={onPrev} disabled={idx === 0}>← 上一題 Prev</button>
+            {showKeys && (
+              <div className="cs-hint">
+                <kbd>1</kbd>–<kbd>5</kbd> 選擇 · <kbd>←</kbd><kbd>→</kbd> 切換
+              </div>
+            )}
+            <button className="cs-btn-ghost" onClick={onNext} disabled={!picked}>
+              下一題 Next →
+            </button>
+          </div>
+        </div>
+
+        {/* 右：即時儀表板 */}
+        <div className="cs-side">
+          <div className="cs-panel">
+            <div className="cs-panel-head">
+              <span>live_scores.tsv</span>
+              <span className="cs-dim">updates live</span>
+            </div>
+            <div className="cs-panel-body cs-live">
+              {Object.entries(scores).sort((a, b) => b[1] - a[1]).map(([k, v]) => {
+                const p = answered ? Math.round((v / answered) * 100) : 0;
+                return (
+                  <div key={k} className="cs-live-row">
+                    <div className="cs-live-head">
+                      <span className="cs-type-sym sm" data-c={k}>{k}</span>
+                      <span className="cs-live-name">{types[k].zh}</span>
+                      <span className="cs-mono">{v} · {p}%</span>
+                    </div>
+                    <div className="cs-live-bar"><div style={{ width: p + '%' }} /></div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="cs-panel">
+            <div className="cs-panel-head"><span>history.log</span></div>
+            <div className="cs-panel-body cs-log">
+              {answers.map((a, i) => (
+                <div key={i} className={`cs-log-row ${a ? 'done' : ''} ${i === idx ? 'cur' : ''}`}>
+                  <span className="cs-mono">Q{String(i + 1).padStart(2, '0')}</span>
+                  <span className="cs-dim">→</span>
+                  <span>{a ? types[a].zh : '—'}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── RESULT ── */
+function CSResult({ topKey, scores, types, total, onRetry }) {
+  const t = types[topKey];
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  const now = new Date();
+  const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+  return (
+    <div className="cs-result">
+      <div className="cs-topbar">
+        <div className="cs-topbar-l">
+          <span className="cs-logo">◆</span>
+          <span className="cs-logo-t">workstyle.dx</span>
+          <span className="cs-chip">REPORT</span>
+        </div>
+        <div className="cs-topbar-r">
+          <span className="cs-dim">generated</span>
+          <span className="cs-mono">{stamp}</span>
+        </div>
+      </div>
+
+      <div className="cs-report">
+        {/* 主卡 */}
+        <div className="cs-report-hero">
+          <div className="cs-report-hero-l">
+            <div className="cs-dim cs-mono">result.primary_type</div>
+            <div className="cs-report-badge">TYPE · {t.code}</div>
+            <h1 className="cs-report-title">
+              <span className="cs-hl">{t.zh}</span>
+              <span className="cs-report-en">The {t.en}</span>
+            </h1>
+            <div className="cs-report-tagline">「{t.tagline_zh}」</div>
+            <p className="cs-report-desc">{t.desc_zh}</p>
+            <div className="cs-tags">
+              {t.tags_zh.map((tag, i) => <span key={i} className="cs-tag">#{tag}</span>)}
+            </div>
+          </div>
+          <div className="cs-report-hero-r">
+            <CSBars scores={scores} types={types} total={total} topKey={topKey} />
+          </div>
+        </div>
+
+        {/* 細節網格 */}
+        <div className="cs-report-grid">
+          <Card title="Strengths · 你的優勢" items={t.strengths_zh} />
+          <Card title="Blindspots · 可能盲點" items={t.blindspots_zh} />
+          <Card title="Pairs · 黃金搭檔" items={t.pairs_zh} />
+          <Card title="Roles · 適合角色" items={t.roles_zh} />
+        </div>
+
+        {/* 分佈表 */}
+        <div className="cs-panel">
+          <div className="cs-panel-head">
+            <span>distribution.table</span>
+            <span className="cs-dim">all types · normalized</span>
+          </div>
+          <div className="cs-dist">
+            <div className="cs-dist-row cs-dist-head">
+              <span>#</span><span>TYPE</span><span>名稱</span>
+              <span>SCORE</span><span>%</span><span>DISTRIBUTION</span>
+            </div>
+            {sorted.map(([k, v], i) => {
+              const p = Math.round((v / total) * 100);
+              return (
+                <div key={k} className={`cs-dist-row ${k === topKey ? 'top' : ''}`}>
+                  <span className="cs-mono">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="cs-type-sym sm" data-c={k}>{k}</span>
+                  <span>{types[k].zh} · <span className="cs-dim">{types[k].en}</span></span>
+                  <span className="cs-mono">{v}/{total}</span>
+                  <span className="cs-mono">{p}%</span>
+                  <span className="cs-dist-bar"><div style={{ width: p + '%' }} /></span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="cs-result-cta">
+          <button className="cs-btn" onClick={onRetry}>重新測驗 Retry ↻</button>
+          <button className="cs-btn-ghost" onClick={() => window.print()}>匯出 Export ↓</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Card({ title, items }) {
+  return (
+    <div className="cs-panel cs-card">
+      <div className="cs-panel-head"><span>{title}</span></div>
+      <div className="cs-panel-body">
+        <ul className="cs-ul">{items.map((s, i) => <li key={i}>{s}</li>)}</ul>
+      </div>
+    </div>
+  );
+}
+
+function CSBars({ scores, types, total, topKey }) {
+  return (
+    <div className="cs-bars">
+      {Object.entries(scores).sort((a, b) => b[1] - a[1]).map(([k, v]) => {
+        const p = Math.round((v / total) * 100);
+        return (
+          <div key={k} className={`cs-bar-row ${k === topKey ? 'top' : ''}`}>
+            <div className="cs-bar-label">
+              <span className="cs-type-sym sm" data-c={k}>{k}</span>
+              <span>{types[k].zh}</span>
+            </div>
+            <div className="cs-bar-track">
+              <div className="cs-bar-fill" style={{ width: p + '%' }} />
+              <span className="cs-bar-v cs-mono">{p}%</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+window.ConsoleQuiz = ConsoleQuiz;
+
+    const TWEAK_DEFAULTS = {
+      "variant": "editorial",
+      "accent": "#8B1E3F",
+      "dark": false,
+      "showKeys": true
+    };
+
+    const ACCENTS = {
+      editorial: ['#D4521A', '#1B4332', '#2D3A87', '#8B1E3F'],
+      console:   ['#5B5BD6', '#0091FF', '#30A46C', '#F76B15', '#E5484D']
+    };
+
+    function App() {
+      const [variant, setVariant] = React.useState(TWEAK_DEFAULTS.variant);
+      const [accent, setAccent] = React.useState(TWEAK_DEFAULTS.accent);
+      const [dark, setDark] = React.useState(TWEAK_DEFAULTS.dark);
+      const [showKeys, setShowKeys] = React.useState(TWEAK_DEFAULTS.showKeys);
+
+      React.useEffect(() => {
+        const palette = ACCENTS[variant];
+        if (!palette.includes(accent)) setAccent(palette[0]);
+      }, [variant]);
+
+      React.useEffect(() => {
+        window.__tw = window.__tw || {};
+        window.__tw.sync = () => {
+          document.querySelectorAll('#tw-variant button').forEach(b => {
+            b.classList.toggle('on', b.dataset.v === variant);
+          });
+          const holder = document.getElementById('tw-accent');
+          holder.innerHTML = ACCENTS[variant].map(c =>
+            `<button class="tw-swatch ${c===accent?'on':''}" style="background:${c}" data-c="${c}"></button>`
+          ).join('');
+          holder.querySelectorAll('.tw-swatch').forEach(b => {
+            b.onclick = () => setAccent(b.dataset.c);
+          });
+          document.getElementById('tw-dark').checked = dark;
+          document.getElementById('tw-dark-row').style.display = variant === 'console' ? 'flex' : 'none';
+          document.getElementById('tw-keys').checked = showKeys;
+        };
+        document.querySelectorAll('#tw-variant button').forEach(b => {
+          b.onclick = () => setVariant(b.dataset.v);
+        });
+        document.getElementById('tw-dark').onchange = (e) => setDark(e.target.checked);
+        document.getElementById('tw-keys').onchange = (e) => setShowKeys(e.target.checked);
+        window.__tw.sync();
+      }, [variant, accent, dark, showKeys]);
+
+      if (variant === 'editorial') {
+        return <EditorialQuiz accent={accent} showKeys={showKeys} />;
+      }
+      return <ConsoleQuiz accent={accent} dark={dark} showKeys={showKeys} />;
+    }
+
+    window.__tw = {
+      open: () => document.getElementById('tw-panel').classList.add('open'),
+      close: () => document.getElementById('tw-panel').classList.remove('open')
+    };
+
+    ReactDOM.createRoot(document.getElementById('app')).render(<App />);
+  </script>
+</body>
+</html>
